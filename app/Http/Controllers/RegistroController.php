@@ -8,6 +8,7 @@ use Barryvdh\DomPDF\Facade\PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Milon\Barcode\DNS1D;
 
 class RegistroController extends Controller
 {
@@ -38,6 +39,10 @@ class RegistroController extends Controller
         $data->precio_pagado  = $request->precio_pagado;
         $data->status  = 1;
 
+        // Generar el código de barras
+        $barcode = new DNS1D();
+        $barcode->setStorPath(public_path('barcodes/'));
+        $barcodeHTML = $barcode->getBarcodeHTML($data->placa_auto, 'C128');
 
          // Generar PDF
          $pdf = PDF::loadView('pdf_template', [
@@ -46,6 +51,7 @@ class RegistroController extends Controller
             'placa_auto' => $data->placa_auto,
             'precio_pagado' => $data->precio_pagado,
             'created_at' => Carbon::now()->format('H:i'),
+            'barcodeHTML' => $barcodeHTML,
         ]);
 
         // Definir el nombre del archivo

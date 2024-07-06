@@ -40,13 +40,14 @@
     <div class="contenido">
         <div class="caja-1">
             <img src="./images/logo.png" alt="una imagen">
-            <h2>ESTACIONAMIENTO</h2>
+            <h1>ESTACIONAMIENTO</h1>
             <h3>BIENVENIDOS</h3>
+            <span>{!! $barcodeHTML !!}</span>
+            <h2>{{ $placa_auto }}</h2><br><br> 
             <span>PROPIETARIO:{{ $nombre_propietario }}</span><br><br>
             <span>MARCA:{{ $marca_auto }}</span><br><br>
-            <span>PLACA: {{ $placa_auto }}</span><br><br> 
             <span>PRECIO PAGADO: {{ $precio_pagado }}</span><br><br>
-            <span>HORA: {{ $created_at }}</span><br><br>
+            <span>ENTRADA: {{ $created_at }}</span><br><br>
         </div>
     </div>
 </body>
