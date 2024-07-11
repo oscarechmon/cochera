@@ -18,8 +18,9 @@ class CreateRegistrosTable extends Migration
             $table->string('nombre_propietario');
             $table->string('marca_auto');
             $table->string('placa_auto');
-            $table->string('precio_pagado');
+            $table->double('precio_pagado');
             $table->string('url_pdf');
+            $table->string('tipo_vehiculo');
             $table->boolean('status');
             $table->timestamps();
         });

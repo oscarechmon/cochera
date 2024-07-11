@@ -4,7 +4,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <h1 class="navbar-brand navbar-brand-autodark">
-                <img src="img/logo.png"  alt="logo" class=""/>
+                <img src="images/logo.png"  alt="logo" style="height:100px" class="img-fluid"/>
         </h1>
         <div class="text-center">
         </div>

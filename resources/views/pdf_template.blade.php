@@ -7,13 +7,12 @@
     <style>
         body {
             padding: 0;
-            margin: 0;
-            width: 80mm; /* Ancho del ticket */
+            margin: auto;
+            width: 100mm !important; /* Ancho del ticket */
             height: 100vh; /* Ajuste automático de la altura a la altura total de la ventana */
             display: flex;
             justify-content: center; /* Centrado horizontal */
             align-items: center; /* Centrado vertical */
-            margin: auto;
         }
         .contenido {
             width: 100%;
@@ -29,10 +28,19 @@
             box-sizing: border-box; /* Para incluir el padding dentro del ancho y alto */
         }
         .caja-1 img {
-            margin: auto;
             display: block;
+            margin: auto;
             height: 100px;
             width: 100px;
+        }
+        .caja-2 {
+            position: relative;
+            text-align: center !important;
+            margin: auto !important;
+        }
+        .caja-2 span{
+            text-align: center !important;
+            margin: auto !important;
         }
     </style>
 </head>
@@ -42,9 +50,12 @@
             <img src="./images/logo.png" alt="una imagen">
             <h1>ESTACIONAMIENTO</h1>
             <h3>BIENVENIDOS</h3>
-            <span>{!! $barcodeHTML !!}</span>
+            <div class="caja-2">
+                <span>{!! $barcodeHTML !!}</span>
+            </div>
             <h2>{{ $placa_auto }}</h2><br><br> 
-            <span>PROPIETARIO:{{ $nombre_propietario }}</span><br><br>
+            <span style="text-align:center;margin-auto;">PROPIETARIO:{{ $nombre_propietario }}</span><br><br>
+            <span>TIPO VEHICULO:{{ $tipo_vehiculo }}</span><br><br>
             <span>MARCA:{{ $marca_auto }}</span><br><br>
             <span>PRECIO PAGADO: {{ $precio_pagado }}</span><br><br>
             <span>ENTRADA: {{ $created_at }}</span><br><br>

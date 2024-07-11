@@ -49,6 +49,7 @@
                     CREAR NUEVO registro
                 </button>
             </div>
+            
         </div>
         <div class="card-body">
         <div class="card-header">
@@ -65,6 +66,17 @@
                     <div class="form-group col-md-3 col-sm-12">
                         <label for="">PLACA DEL AUTO</label>
                         <input type="text" name="placa_auto" class="form-control" value="{{ request('placa_auto') }}">
+                    </div>
+                    <div class="form-group col-md-3 col-sm-12">
+                        <label for="">TIPO VEHICULO</label>
+                        <select name="tipo_vehiculo" class="js-example-basic-single" value="{{ request('tipo_vehiculo') }}">
+                            <option value="">SELECCIONE TIPO VEHICULO</option>
+                            <option value="AUTO">AUTO</option>
+                            <option value="CAMIONETA">CAMIONETA</option>
+                            <option value="VAN">VAN</option>
+                            <option value="CAMIÓN">CAMIÓN</option>
+                            <option value="MOTO">MOTO</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-3 col-sm-12">
                         <label for="">PRECIO PAGADO</label>
@@ -87,6 +99,7 @@
                 </div>
             </form>
         </div>
+        <a href="{{ route('exportar-registros', request()->all()) }}" class="btn btn-success">Exportar a Excel</a>
        
             <table class="table table-hover table-bordered">
                 <thead class="text-center">
@@ -96,9 +109,11 @@
                         <th>MARCA DEL AUTO</th>
                         <th>PLACA DEL AUTO</th>
                         <th>PRECIO PAGADO</th>
+                        <th>TIPO VEHICULO</th>     
                         <th>FECHA GENERADO</th>
                         <th>FECHA ACTUALIZADO</th>
                         <th>ENVIAR AL CORREO</th>
+                        <th>TICKET</th>
                         <th>ESTADO</th>
                     </tr>
                 </thead>
@@ -107,15 +122,22 @@
                     <tr class="text-center">
                         <td>
                             <div class="d-flex justify-content-center gap-2">
-                                <button type="button" class="btn btn-ghost-warning btn-sm edit-button" onclick="traerDataCliente({{$item->id}})" data-id="{{ $item->id }}">
+                                <form action="{{ route('eliminar-registro', ['id' => $item->id]) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-ghost-danger btn-sm edit-button">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                                <button type="button" class="btn btn-ghost-warning btn-sm edit-button" onclick="traerDataRegistro({{$item->id}})" data-id="{{ $item->id }}">
                                     <i class="fas fa-pencil-alt"></i>
                                 </button>
                                 @if($item->status)
                                     <form action="{{ route('inhabilitar-registro', ['id' => $item->id]) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-ghost-danger btn-sm">
-                                            <i class="fas fa-trash"></i>
+                                        <button type="submit" class="btn btn-ghost-warning btn-sm">
+                                            <i class="fa-solid fa-arrow-right"></i>
                                         </button>
                                     </form>
                                 @else
@@ -133,6 +155,7 @@
                         <td>{{ $item->marca_auto }}</td>
                         <td>{{ $item->placa_auto }}</td>
                         <td>{{ $item->precio_pagado }}</td>
+                        <td>{{ $item->tipo_vehiculo }}</td>
                         <td>{{ $item->created_at }}</td>
                         <td>{{ $item->updated_at }}</td>
                         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#enviarCorreoModal">
@@ -141,9 +164,9 @@
                         <td><a href="{{ asset($item->url_pdf) }}" target="_blank">Descargar PDF</a></td>
                         <td class="d-flex align-items-center justify-content-center">
                             @if($item->status)
-                                <span class="badge bg-success-lt">Activo</span>
+                                <span class="badge bg-success-lt">PENDIENTE</span>
                             @else
-                                <span class="badge bg-danger-lt">Desactivado</span>
+                                <span class="badge bg-danger-lt">FINALIZADO</span>
                             @endif
                         </td>
                     </tr>
@@ -191,7 +214,19 @@
                                 <label for="precio_pagado">PRECIO PAGADO:</label>
                                 <input type="text" class="form-control" id="precio_pagado" name="precio_pagado">
                             </div>
-                        
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-3">
+                            <label for="">TIPO VEHICULO</label>
+                                <select name="tipo_vehiculo" class="js-example-basic-single">
+                                    <option value="">SELECCIONE TIPO VEHICULO</option>
+                                    <option value="AUTO">AUTO</option>
+                                    <option value="CAMIONETA">CAMIONETA</option>
+                                    <option value="VAN">VAN</option>
+                                    <option value="CAMIÓN">CAMIÓN</option>
+                                    <option value="MOTO">MOTO</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -220,19 +255,19 @@
                         <div class="col-md-4">
                             <div class="form-group mb-3">
                                 <label for="nombre_propietario">NOMBRE PROPIETARIO:</label>
-                                <input type="text" class="form-control" id="nombre_propietario" name="nombre_propietario">
+                                <input type="text" class="form-control" id="updatenombre_propietario" name="nombre_propietario">
                             </div>
                             </div>
                             <div class="col-md-4">
                             <div class="form-group mb-3">
                                 <label for="marca_auto">MARCA DE AUTO:</label>
-                                <input type="text" class="form-control" id="marca_auto" name="marca_auto">
+                                <input type="text" class="form-control" id="updatemarca_auto" name="marca_auto">
                             </div>
                             </div>
                             <div class="col-md-4">
                             <div class="form-group mb-3">
                                 <label for="placa_auto">PLACA DEL AUTO:</label>
-                                <input type="text" class="form-control" id="placa_auto" name="placa_auto">
+                                <input type="text" class="form-control" id="updateplaca_auto" name="placa_auto">
                             </div>
                         </div>
                     </div>
@@ -240,10 +275,22 @@
                         <div class="col-md-4">
                             <div class="form-group mb-3">
                                 <label for="precio_pagado">PRECIO PAGADO:</label>
-                                <input type="text" class="form-control" id="precio_pagado" name="precio_pagado">
+                                <input type="text" class="form-control" id="updateprecio_pagado" name="precio_pagado">
                             </div>
-                        
                         </div>
+                        <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label for="updatetipo_vehiculo">TIPO VEHICULO</label>
+                                    <select name="tipo_vehiculo" id="updatetipo_vehiculo" class="js-example-basic-single">
+                                        <option value="">SELECCIONE TIPO VEHICULO</option>
+                                        <option value="AUTO">AUTO</option>
+                                        <option value="CAMIONETA">CAMIONETA</option>
+                                        <option value="VAN">VAN</option>
+                                        <option value="CAMIÓN">CAMIÓN</option>
+                                        <option value="MOTO">MOTO</option>
+                                    </select>
+                                </div>
+                            </div>    
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -257,8 +304,11 @@
 <div class="modal fade" id="enviarCorreoModal" tabindex="-1" role="dialog" aria-labelledby="enviarCorreoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-         
+            @if($data->isEmpty())
+            <form action="#" method="POST">
+            @else
             <form action="{{ route('enviar.correo', ['id' => $item->id]) }}" method="POST">
+            @endif
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="enviarCorreoModalLabel">Enviar PDF por Correo Electrónico</h5>
@@ -284,23 +334,33 @@
 @section('js')
 <script>
     var traerDataRegistro = function(id){
-        const urlRegistro=`mis-Registros/${id}`;
+        const urlRegistro=`mis-registros/${id}`;
         $.ajax({
             url: urlRegistro,
             method: 'GET',
             success: function(response) {
-                var Registro = response;
-                $('#idRegistro').val(cliente.id);
-                $('#updatenombre').val(cliente.nombre);
-                $('#updatetipo_persona').val(cliente.tipo_persona);
-                $('#updateruc').val(cliente.ruc);
-                $('#actualizarClienteModal').modal('show'); 
+                var registro = response;
+                $('#idRegistro').val(registro.id);
+                $('#updatenombre_propietario').val(registro.nombre_propietario);
+                $('#updatemarca_auto').val(registro.marca_auto);
+                $('#updateplaca_auto').val(registro.placa_auto);
+                $('#updateprecio_pagado').val(registro.precio_pagado);
+                $('#updatetipo_vehiculo').val(registro.tipo_vehiculo);
+                $('#actualizarRegistroModal').modal('show'); 
             },
             error: function() {
                 alert('Error en la solicitud AJAX.');
             }
         });
     };
+</script>
+<script>
+      $('.selectmodal').select2({
+        dropdownParent: $('#nuevoRegistroLogistico')
+      });   
+      $(document).ready(function() {
+      $('.js-example-basic-single').selectize();
+    });
 </script>
 @endsection
 @endsection
